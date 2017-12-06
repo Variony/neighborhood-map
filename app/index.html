@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Map</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+
+<body>
+	<div class="container">
+
+		<aside class="sidebar">
+			<div class="sidebar-form">
+				<input type="text" placeholder="Station Location">
+				<input type="button" value='Go'>
+			</div>
+
+			<ul class="sidebar-menu" data-bind="foreach: locations">
+				<li data-bind="text: title, click: $root.zoom.bind($data, $index())"></li>
+			</ul>
+		</aside>
+
+		<div class="map-container">
+			
+			<div id="map">
+				
+
+			</div>
+
+		</div>
+
+	</div>
+
+	
+    
+	
+
+
+
+
+
+
+<script type="text/javascript" src="scripts/all.js"></script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyCyFRa7u--ksSSzFGP260D1NFCoV6fzndI&v=3&callback=initMap"></script>
+</body>
+
+
+</html>

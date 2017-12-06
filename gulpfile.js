@@ -44,13 +44,13 @@ gulp.task('lint', function() {
 });
 
 gulp.task('scripts', function() {
-	gulp.src('app/scripts/**/*.js')
+	gulp.src(['bower_components/jquery/dist/jquery.min.js','bower_components/knockout/dist/knockout.js', 'app/scripts/**/*.js'])
 		.pipe(concat('all.js'))
 		.pipe(gulp.dest('dist/scripts'));
 });
 
 gulp.task('scripts-dist', function() {
-	gulp.src('app/scripts/**/*.js')
+	gulp.src(['bower_components/jquery/dist/jquery.min.js', 'bower_components/knockout/dist/knockout.js', 'app/scripts/**/*.js'])
 		.pipe(concat('all.js'))
 		.pipe(uglify())
 		.pipe(gulp.dest('dist/scripts'));
