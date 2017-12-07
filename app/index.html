@@ -12,7 +12,8 @@
 
 		<aside class="sidebar">
 			<div class="sidebar-form">
-				<input type="text" placeholder="Station Location">
+				<input data-bind="textInput: filterText" type="text" placeholder="Station Location">
+
 				<input type="button" value='Go'>
 			</div>
 
@@ -22,12 +23,8 @@
 		</aside>
 
 		<div class="map-container">
-			
 			<div id="map">
-				
-
 			</div>
-
 		</div>
 
 	</div>

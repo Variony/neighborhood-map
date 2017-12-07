@@ -9,8 +9,12 @@ let locations = [
 	{ title: 'Chinatown Homey Space', location: { lat: 40.7180628, lng: -73.9961237 } }
 ];
 
+
 let map;
 let markers = [];
+let infowindow;
+const CLIENT_ID = 'MAZXEDFONLQ5HUFMTJ3NKH42QB22IXH0M2GXM2A22DSPEWH0';
+const CLIENT_SECRET = 'PAT52K3EHSGPQQHCM0OLUSOJEQDFM1QMQSLTVEU3OZXZQEEZ';
 
 function initMap() {
 
@@ -19,6 +23,7 @@ function initMap() {
 		zoom: 8
 	});
 
+	infowindow = new google.maps.InfoWindow();
 
 	for(let i = 0; i < locations.length; i ++) {
 		const position = locations[i].location;
@@ -41,17 +46,43 @@ function initMap() {
 }
 
 function populateInfoWindow(marker) {
-	if(marker.hasInfo) return;
-	marker.hasInfo = true;
+	if(infowindow.marker === marker) return;
+	infowindow.marker = marker;
 	const title = marker.getTitle();
-	const infowindow = new google.maps.InfoWindow();
-	infowindow.setContent(title);
-	infowindow.open(map, marker);
-	infowindow.addListener('closeclick', function() {
-		infowindow.marker = null;
-		marker.hasInfo = false;
-	});
+	const lat = marker.getPosition().lat();
+	const lng = marker.getPosition().lng();
+
+
+	$.ajax({
+		url: `https://api.foursquare.com/v2/venues/explore?v=20170801&ll=${lat},${lng}&limit=2&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`,
+	}).done(function(data) {
+		showRecommendPlaces(marker, data);
+	}).fail(function() {
+		alert('No info');
+	});	
 }
+
+function showRecommendPlaces(marker, data) {
+	if(data.meta.code === 200) {
+		const items = data.response.groups[0].items;
+		let innerHTML = '<h2> Recommend Place for You </h2>';
+		for(let i = 0; i < items.length; i ++) {
+			const venue = items[i].venue;
+			innerHTML += `<h3>${venue.name}</h3>`;
+			innerHTML += `<ul><li>phone: ${venue.contact.phone}</li><li>address: ${venue.location.address}</li><li>time: ${venue.hours.status}</li></ul>`;
+		}
+
+		infowindow.setContent(innerHTML);
+		infowindow.open(map, marker);
+		infowindow.addListener('closeclick', function() {
+			infowindow.marker = null;
+		});
+	}else{
+		alert('No Info');
+	}
+}
+
+
 
 function showListings() {
 	var bounds = new google.maps.LatLngBounds();
@@ -72,10 +103,15 @@ function zoomToSelect(marker) {
 
 function MapViewModel() {
 	let self = this;
+	self.filterText = ko.observable('');
 	self.locations = ko.observableArray(locations);
 	self.zoom = function(index) {
 		zoomToSelect(markers[index]);
 	};
+
+	self.filterText.subscribe(function () {
+		alert(self.filterText());
+	});
 
 }
 
