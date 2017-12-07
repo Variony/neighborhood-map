@@ -2,46 +2,32 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Map</title>
-    <link rel="stylesheet" href="styles/main.css">
+	<meta charset="UTF-8">
+	<title>Map</title>
+	<link rel="stylesheet" href="styles/main.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
 	<div class="container">
-
 		<aside class="sidebar">
 			<div class="sidebar-form">
 				<input data-bind="textInput: filterText" type="text" placeholder="Station Location">
-
 				<input type="button" value='Go' data-bind='click: $root.go'>
 			</div>
-
 			<ul class="sidebar-menu" data-bind="foreach: filterLocations">
 				<li data-bind="text: title, click: $root.zoom.bind($data)"></li>
 			</ul>
 		</aside>
-
 		<div class="map-container">
-			<div id="map">
+			<div class="menu-container">
+				<div class="menu-icon"></div>
 			</div>
+			<div id="map"></div>
 		</div>
-
 	</div>
-
-	
-    
-	
-
-
-
-
-
-
-<script type="text/javascript" src="scripts/all.js"></script>
-
-<script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyCyFRa7u--ksSSzFGP260D1NFCoV6fzndI&v=3&callback=initMap"></script>
+	<script type="text/javascript" src="scripts/all.js"></script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyCyFRa7u--ksSSzFGP260D1NFCoV6fzndI&v=3&callback=initMap"></script>
 </body>
-
 
 </html>
