@@ -9,9 +9,10 @@ let locations = [
 	{ title: 'Chinatown Homey Space', location: { lat: 40.7180628, lng: -73.9961237 } }
 ];
 
+let filterLocations = locations.slice();
 
 let map;
-let markers = [];
+let markers = {};
 let infowindow;
 const CLIENT_ID = 'MAZXEDFONLQ5HUFMTJ3NKH42QB22IXH0M2GXM2A22DSPEWH0';
 const CLIENT_SECRET = 'PAT52K3EHSGPQQHCM0OLUSOJEQDFM1QMQSLTVEU3OZXZQEEZ';
@@ -39,9 +40,9 @@ function initMap() {
 		marker.addListener('click', function() {
 			populateInfoWindow(this);
 		});
-		markers.push(marker);
+		markers[title] = marker;
 	}
-	showListings();	
+	showListings(locations);	
 
 }
 
@@ -84,12 +85,12 @@ function showRecommendPlaces(marker, data) {
 
 
 
-function showListings() {
+function showListings(location) {
 	var bounds = new google.maps.LatLngBounds();
 	// Extend the boundaries of the map for each marker and display the marker
-	for (var i = 0; i < markers.length; i++) {
-		markers[i].setMap(map);
-		bounds.extend(markers[i].position);
+	for (let i = 0; i < filterLocations.length; i ++) {
+		markers[filterLocations[i].title].setMap(map);
+		bounds.extend(filterLocations[i].location);
 	}
 	map.fitBounds(bounds);
 }
@@ -104,14 +105,25 @@ function zoomToSelect(marker) {
 function MapViewModel() {
 	let self = this;
 	self.filterText = ko.observable('');
-	self.locations = ko.observableArray(locations);
-	self.zoom = function(index) {
-		zoomToSelect(markers[index]);
+	self.filterLocations = ko.observableArray(filterLocations);
+	self.zoom = function(data) {
+		zoomToSelect(markers[data.title]);
 	};
 
 	self.filterText.subscribe(function () {
-		alert(self.filterText());
+		const word = self.filterText();
+		self.filterLocations.removeAll();
+		for(let i = 0; i < locations.length; i ++) {
+			if(locations[i].title.indexOf(word) !== -1) {
+				self.filterLocations.push(locations[i]);
+			}
+
+		}
 	});
+
+	self.go = function() {
+		showListings(self.filterLocations());
+	};
 
 }
 

@@ -14,11 +14,11 @@
 			<div class="sidebar-form">
 				<input data-bind="textInput: filterText" type="text" placeholder="Station Location">
 
-				<input type="button" value='Go'>
+				<input type="button" value='Go' data-bind='click: $root.go'>
 			</div>
 
-			<ul class="sidebar-menu" data-bind="foreach: locations">
-				<li data-bind="text: title, click: $root.zoom.bind($data, $index())"></li>
+			<ul class="sidebar-menu" data-bind="foreach: filterLocations">
+				<li data-bind="text: title, click: $root.zoom.bind($data)"></li>
 			</ul>
 		</aside>
 
