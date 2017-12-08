@@ -46,6 +46,10 @@ function initMap() {
 	showListings(locations);
 }
 
+function mapError() {
+	alert('No info');
+}
+
 function populateInfoWindow(marker) {
 	if (infowindow.marker === marker) return;
 	infowindow.marker = marker;
@@ -69,8 +73,13 @@ function showRecommendPlaces(marker, data) {
 		let innerHTML = '<h2> Recommend Place for You </h2>';
 		for (let i = 0; i < items.length; i++) {
 			const venue = items[i].venue;
-			innerHTML += `<h3>${venue.name}</h3>`;
-			innerHTML += `<ul><li>phone: ${venue.contact.phone}</li><li>address: ${venue.location.address}</li><li>time: ${venue.hours.status}</li></ul>`;
+			const name = venue.name || 'No name provided';
+			const phone = venue.contact.phone || 'No phone provided';
+			const address = venue.location.address || 'No address provided';
+			const time = venue.hours.status || 'No time provided';
+
+			innerHTML += `<h3>${name}</h3>`;
+			innerHTML += `<ul><li>phone: ${phone}</li><li>address: ${address}</li><li>time: ${time}</li></ul>`;
 		}
 
 		infowindow.setContent(innerHTML);
@@ -116,6 +125,14 @@ function MapViewModel() {
 		zoomToSelect(markers[data.title]);
 	};
 
+	self.toggleSideBar = function() {
+		$('aside.sidebar').toggle();
+		$('.map-container').toggleClass('expand-map-container');
+		var currCenter = map.getCenter();
+		google.maps.event.trigger(map, 'resize');
+		map.setCenter(currCenter);
+	};
+
 	self.filterText.subscribe(function() {
 		const word = self.filterText().toLowerCase();
 		self.filterLocations.removeAll();
@@ -123,22 +140,11 @@ function MapViewModel() {
 			if (locations[i].title.toLowerCase().indexOf(word) !== -1) {
 				self.filterLocations.push(locations[i]);
 			}
-
 		}
-	});
-
-	self.go = function() {
 		showListings(self.filterLocations());
-	};
+	});
 
 }
 
 ko.applyBindings(new MapViewModel());
 
-$('.menu-icon').click(function() {
-	$('aside.sidebar').toggle();
-	$('.map-container').toggleClass('expand-map-container');
-	var currCenter = map.getCenter();
-	google.maps.event.trigger(map, 'resize');
-	map.setCenter(currCenter);
-});
